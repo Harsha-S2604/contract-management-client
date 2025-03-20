@@ -5,7 +5,7 @@ const Heading = (props) => {
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="flex h-14 items-center justify-center">
                     <div className="text-center">
-                        <h2 className="text-3xl dark:text-white font-bold">{heading}</h2>
+                        <h2 className="text-3xl text-white font-bold">{heading}</h2>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
 import { CalendarIcon, CheckCircle, Clock, AlertCircle, Plus, Trash } from "lucide-react";
+import { useState } from "react";
+import DeleteDialogConfirmation from "../ui/DeleteDialog";
 
 const contractsData = [
     {
@@ -36,9 +38,13 @@ const contractsData = [
 ];
 
 const Contracts = () => {
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const handleDeleteContract = () => {
+        console.log("Delete Dialog Contract")
+    }
     return (
         <>
-            {
+            { 
                 !contractsData || !contractsData.length ? (
                     <div className="flex flex-col items-center justify-center mt-10 p-10 text-center bg-gray-50 rounded-lg shadow-md w-96 mx-auto">
                         <div className="mb-4">
@@ -71,7 +77,7 @@ const Contracts = () => {
                         </div>
                         <div className="bg-white shadow-md rounded-lg overflow-hidden">
                             <Table className="table-auto w-full">
-                                <TableHeader className="bg-gray-200">
+                                <TableHeader className="bg-gray-100">
                                     <TableRow>
                                         <TableHead className="text-left py-2 px-4 text-gray-600">Contracter ID</TableHead>
                                         <TableHead className="text-left py-2 px-4 text-gray-600">Client Name</TableHead>
@@ -100,7 +106,10 @@ const Contracts = () => {
                                                 </a>
                                             </TableCell>
                                             <TableCell className="py-2 px-4 flex items-center justify-start space-x-2">
-                                                <Trash className="cursor-pointer text-red-600" />
+                                                <Trash className="cursor-pointer text-red-600" onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setDeleteDialogOpen(true);
+                                                }}/>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -109,6 +118,7 @@ const Contracts = () => {
                         </div>
                     </div>
             }
+            <DeleteDialogConfirmation dialogOpen={deleteDialogOpen} setDialogOpen={setDeleteDialogOpen} deleteCB={handleDeleteContract} />
         </>
 
     );
