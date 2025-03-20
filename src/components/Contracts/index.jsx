@@ -7,6 +7,13 @@ import AddContractDialog from "./AddContractDialog"
 import DeleteDialogConfirmation from "../ui/DeleteDialog"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 
 const Contracts = () => {
@@ -136,8 +143,20 @@ const Contracts = () => {
                                             <TableCell className="py-3 px-4">{contract.contracterId}</TableCell>
                                             <TableCell className="py-3 px-4">{contract.clientName}</TableCell>
                                             <TableCell
-                                                className={`py-2 px-4 ${contract.contractStatus === "Draft" ? "text-yellow-600" : "text-green-600"}`}>
-                                                {contract.contractStatus}
+                                                className={`py-3 px-4`}>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button style={{ outline: 'none', boxShadow: 'none' }} variant="ghost">
+                                                            <span className={`${contract.contractStatus === "Draft" ? "text-yellow-600" : "text-green-600"}`}>{contract.contractStatus}</span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent>
+                                                        <DropdownMenuRadioGroup value={contract.contractStatus} onValueChange={(status) => console.log("status", status)}>
+                                                            <DropdownMenuRadioItem value="Draft">Draft</DropdownMenuRadioItem>
+                                                            <DropdownMenuRadioItem value="Finalized">Finalized</DropdownMenuRadioItem>
+                                                        </DropdownMenuRadioGroup>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </TableCell>
                                             <TableCell className="py-2 px-4 text-sm text-blue-500">
                                                 <Popover>
