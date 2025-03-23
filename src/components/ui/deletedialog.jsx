@@ -27,10 +27,10 @@ const DeleteDialogConfirmation = (props) => {
                     {deleteDescription}
                 </DialogDescription>
                 <DialogFooter className="space-x-4">
-                    <Button variant="destructive" onClick={handleDelete} disabled={loading}>
+                    <Button className="cursor-pointer" variant="destructive" onClick={handleDelete} disabled={loading}>
                         {loading ? "Deleting..." : "Delete"}
                     </Button>
-                    <Button variant="secondary" onClick={() => setDialogOpen(false)} disabled={loading}>
+                    <Button className="cursor-pointer" variant="secondary" onClick={() => setDialogOpen(false)} disabled={loading}>
                         Cancel
                     </Button>
                 </DialogFooter>

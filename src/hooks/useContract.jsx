@@ -27,8 +27,9 @@ const useContract = () => {
         return createRespone
     }
 
-    const deleteContract = async () => {
-
+    const deleteContract = async (contractId) => {
+        const deleteResponse = await contractsApi.deleteContract(contractId)
+        return deleteResponse
     }
 
     const updateContract = async () => {

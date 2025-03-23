@@ -22,11 +22,12 @@ import { toast } from "sonner"
 
 const Contracts = () => {
     const fileInputRef = useRef(null);
+    const [contractToDelete, setContractToDelete] = useState(null);
     const [uiLoading, setUILoading] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [addContractDialogOpen, setAddContractDialogOpen] = useState(false)
     
-    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading, addContract } = useContract()
+    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading, addContract, deleteContract } = useContract()
 
     const handleAddContract = async (newContract) => {
         setUILoading(true)
@@ -40,8 +41,15 @@ const Contracts = () => {
         setUILoading(false)
     }
 
-    const handleDeleteContract = () => {
-        console.log("Delete Dialog Contract")
+    const handleDeleteContract = async () => {
+        const contractDeleted = await deleteContract(contractToDelete)
+        if (!contractDeleted) {
+            toast.error("Something went wrong please try again later!")
+            return
+        }
+
+        toast.success("Contract deleted")
+        setContractToDelete(null)
     }
 
     const handleFileDownload = () => {
@@ -172,6 +180,7 @@ const Contracts = () => {
                                                 <Trash className="cursor-pointer text-red-600" onClick={(e) => {
                                                     e.stopPropagation()
                                                     setDeleteDialogOpen(true)
+                                                    setContractToDelete(contract.id)
                                                 }} />
                                             </TableCell>
                                         </TableRow>

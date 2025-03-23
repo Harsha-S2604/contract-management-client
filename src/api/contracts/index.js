@@ -31,6 +31,20 @@ const contractsApi = {
 
         return true
     },
+
+    deleteContract: async (contractId) => {
+        const response = await fetch(`http://localhost:3000/contracts/delete/${contractId}`, {
+            method: "DELETE",
+        })
+
+        const result = await response.json()
+
+        if (result.status == "ERROR") {
+            return false
+        }
+
+        return true
+    }
 }
 
 export default contractsApi
