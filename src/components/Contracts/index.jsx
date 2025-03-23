@@ -34,7 +34,7 @@ const Contracts = () => {
         if (!contractAdded) {
             toast.error("Something went wrong please try again later!")
         } else {
-            toast.success("Show successful message")
+            toast.success("Contract added")
             setAddContractDialogOpen(false)
         }
         setUILoading(false)
