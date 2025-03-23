@@ -18,18 +18,26 @@ import {
 } from "../ui/dropdown-menu";
 
 import useContract from "../../hooks/useContract"
-
+import { toast } from "sonner"
 
 const Contracts = () => {
     const fileInputRef = useRef(null);
-    const [uiLoading, setUILoading] = useState(true)
+    const [uiLoading, setUILoading] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [addContractDialogOpen, setAddContractDialogOpen] = useState(false)
     
-    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading } = useContract()
+    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading, addContract } = useContract()
 
-    const handleAddContract = (newContract) => {
-        // setContractsData([...contractsData, newContract])
+    const handleAddContract = async (newContract) => {
+        setUILoading(true)
+        const contractAdded = await addContract(newContract)
+        if (!contractAdded) {
+            toast.error("Something went wrong please try again later!")
+        } else {
+            toast.success("Show successful message")
+            setAddContractDialogOpen(false)
+        }
+        setUILoading(false)
     }
 
     const handleDeleteContract = () => {
@@ -182,6 +190,7 @@ const Contracts = () => {
             />
 
             <AddContractDialog
+                uiLoading={uiLoading}
                 addContractDialogOpen={addContractDialogOpen}
                 setAddContractDialogOpen={setAddContractDialogOpen}
                 handleAddContract={handleAddContract}

@@ -22,8 +22,9 @@ const useContract = () => {
         return contractsObj
     }
 
-    const addContract = async () => {
-
+    const addContract = async (contract) => {
+        const createRespone = await contractsApi.createContract(contract)
+        return createRespone
     }
 
     const deleteContract = async () => {

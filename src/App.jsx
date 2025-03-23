@@ -1,5 +1,6 @@
 import Heading from './components/Heading'
 import Contracts from './components/Contracts'
+import { Toaster } from './components/ui/sonner'
 
 function App() {
 
@@ -7,6 +8,7 @@ function App() {
     <div>
       <Heading title="Contract Management" />
       <Contracts />
+      <Toaster />
     </div>
   )
 }

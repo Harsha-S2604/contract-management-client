@@ -14,7 +14,23 @@ const contractsApi = {
             contracts: result.contracts,
             totalContracts:  result.count
         }
-    }
+    },
+
+    createContract: async (contract) => {
+        const response = await fetch(`http://localhost:3000/contracts/create`, {
+            method: "POST",
+            headers: { 'Content-Type':'application/json' },
+            body: JSON.stringify({contract})
+        })
+
+        const result = await response.json()
+
+        if (result.status == "ERROR") {
+            return false
+        }
+
+        return true
+    },
 }
 
 export default contractsApi

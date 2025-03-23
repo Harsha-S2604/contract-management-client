@@ -2,15 +2,27 @@ import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "../ui/dialog"
 import { Button } from "../ui/button"
 
-const AddForm = ({ onSubmit }) => {
+const AddForm = ({ uiLoading, onSubmit }) => {
+    const [fileData, setFileData] = useState([])
     const [clientName, setClientName] = useState('')
     const [contractStatus, setContractStatus] = useState('Draft')
     const [contractFile, setContractFile] = useState(null)
+    const [errorMessage, setErrorMessage] = useState('')
 
     const handleFileChange = (e) => {
         const file = e.target.files[0]
         if (file) {
             setContractFile(file)
+
+            if (file) {
+                const reader = new FileReader()
+                reader.onloadend = () => {
+                    const buffer = reader.result
+                    setFileData(buffer)
+                }
+
+                reader.readAsDataURL(file)
+            }
         }
     }
 
@@ -18,27 +30,28 @@ const AddForm = ({ onSubmit }) => {
         e.preventDefault()
 
         if (!clientName || !contractFile) {
-            alert("Please fill out all fields and upload a file.")
+            setErrorMessage("Please fill out all fields and upload a file.")
             return
         }
 
         const newContract = {
-            contracterId: Math.random().toString(36).substr(2, 9), // Generate random ID
             clientName,
-            contractStatus,
-            contractData: URL.createObjectURL(contractFile), // Generate a temporary URL for the file
+            status: contractStatus,
+            contractData: contractFile.name,
+            file: {
+                fileName: contractFile.name,
+                fileType: contractFile.type,
+                fileBase64: fileData
+            }
         }
 
         onSubmit(newContract)
 
-        // Clear form fields after submitting
-        setClientName('')
-        setContractStatus('Draft')
-        setContractFile(null)
+        setErrorMessage('')
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-4">
             <div>
                 <label htmlFor="clientName" className="block text-sm font-semibold">Client Name</label>
                 <input
@@ -77,29 +90,35 @@ const AddForm = ({ onSubmit }) => {
             </div>
 
             <div className="flex justify-end space-x-2">
-                <button
-                    type="button"
+                <Button
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md cursor-pointer"
                     onClick={() => {
                         setClientName('')
+                        setErrorMessage('')
                         setContractStatus('Draft')
                         setContractFile(null)
                     }}
-                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
+                    disabled={uiLoading}
                 >
                     Clear
-                </button>
-                <button
-                    type="submit"
-                    className="px-4 py-2 bg-primary text-white rounded-md"
+                </Button>
+
+                <Button
+                    className="px-4 py-2 bg-primary text-white rounded-md cursor-pointer"
+                    disabled={uiLoading}
+                    onClick={handleSubmit}
                 >
-                    Add Contract
-                </button>
+                    { uiLoading ? "Adding..." : "Add Contract" }
+                </Button>
             </div>
-        </form>
+            <div className='text-red-500'>
+                {errorMessage ? "*" + errorMessage : null}
+            </div>
+        </div>
     )
 }
 
-const AddContractDialog = ({ handleAddContract, addContractDialogOpen,  setAddContractDialogOpen}) => {
+const AddContractDialog = ({ uiLoading, handleAddContract, addContractDialogOpen, setAddContractDialogOpen }) => {
     return (
         <Dialog open={addContractDialogOpen} onOpenChange={setAddContractDialogOpen}>
             <DialogContent>
@@ -107,10 +126,10 @@ const AddContractDialog = ({ handleAddContract, addContractDialogOpen,  setAddCo
                 <DialogDescription>
                     Please fill in the contract details.
                 </DialogDescription>
-                <AddForm onSubmit={handleAddContract} />
+                <AddForm onSubmit={handleAddContract} uiLoading={uiLoading} />
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button variant="outline">Close</Button>
+                        <Button variant="outline" disabled={uiLoading}>Close</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>
