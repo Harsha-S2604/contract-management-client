@@ -22,6 +22,8 @@ import { toast } from "sonner"
 
 const Contracts = () => {
     const fileInputRef = useRef(null);
+
+    const [contractToUpdate, setContractToUpdate] = useState(null);
     const [contractToDelete, setContractToDelete] = useState(null);
     const [uiLoading, setUILoading] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -72,8 +74,9 @@ const Contracts = () => {
 
     }
 
-    const handleFileUpdate = (index) => {
+    const handleFileUpdate = (contractId) => {
         if (fileInputRef.current) {
+            setContractToUpdate(contractId)
             fileInputRef.current.click();
         }
     }
@@ -81,7 +84,19 @@ const Contracts = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            console.log("File selected:", file);
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                const base64 = reader.result
+                const fileData = {
+                    fileName: file.name,
+                    fileType: file.type,
+                    fileBase64: base64
+                }
+                handleUpdateContract(contractToUpdate, 'contract_data', fileData)
+
+            }
+
+            reader.readAsDataURL(file)
         }
     }
 
@@ -183,7 +198,7 @@ const Contracts = () => {
                                                             <Button
                                                                 variant="ghost"
                                                                 className="w-50 text-blue-600 p-2 flex items-center space-x-2"
-                                                                onClick={() => handleFileUpdate(index)}
+                                                                onClick={() => handleFileUpdate(contract.id)}
                                                             >
                                                                 <Upload className="h-4 w-4" />
                                                                 <span>Update File</span>
