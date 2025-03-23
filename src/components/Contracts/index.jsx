@@ -4,6 +4,8 @@ import { Plus, Trash, File, Download, Upload } from "lucide-react"
 import Loader from "../ui/loader"
 import { Button } from "../ui/button"
 import AddContractDialog from "./AddContractDialog"
+import PaginationUI from "./Pagination"
+
 import DeleteDialogConfirmation from "../ui/DeleteDialog"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
@@ -15,53 +17,19 @@ import {
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
+import useContract from "../../hooks/useContract"
+
 
 const Contracts = () => {
     const fileInputRef = useRef(null);
     const [uiLoading, setUILoading] = useState(true)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [addContractDialogOpen, setAddContractDialogOpen] = useState(false)
-    const [contractsData, setContractsData] = useState([
-        {
-            contracterId: "123",
-            clientName: "ABC consultancy",
-            contractStatus: "Draft",
-            contractData: "/folderA/file1.txt",
-        },
-        {
-            contracterId: "120",
-            clientName: "DEF consultancy",
-            contractStatus: "Finalized",
-            contractData: "/folderB/file2.txt",
-        },
-        {
-            contracterId: "121",
-            clientName: "DEF consultancy",
-            contractStatus: "Draft",
-            contractData: "/folderB/file2.txt",
-        },
-        {
-            contracterId: "122",
-            clientName: "DEF consultancy",
-            contractStatus: "Draft",
-            contractData: "/folderB/file2.txt",
-        },
-        {
-            contracterId: "126",
-            clientName: "DEF consultancy",
-            contractStatus: "Finalized",
-            contractData: "/folderB/file2.txt",
-        },
-    ])
-
-    useEffect(() => {
-        if (contractsData) {
-            setUILoading(false)
-        }
-    }, [contractsData])
+    
+    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading } = useContract()
 
     const handleAddContract = (newContract) => {
-        setContractsData([...contractsData, newContract])
+        // setContractsData([...contractsData, newContract])
     }
 
     const handleDeleteContract = () => {
@@ -85,16 +53,17 @@ const Contracts = () => {
         }
     }
 
-    if (uiLoading) {
+    if (contractsLoading) {
         return (
             <Loader />
         )
     }
 
 
+    const totalPages = Math.ceil(totalContracts / 5)
     return (
         <>
-            {contractsData.length === 0 ? (
+            {contracts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center mt-10 p-10 text-center bg-gray-50 rounded-lg shadow-md w-96 mx-auto">
                     <p className="text-lg text-gray-600 mb-4">It looks like there are no contracts here yet.</p>
                     <Button
@@ -134,24 +103,24 @@ const Contracts = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {contractsData.map((contract, index) => {
-                                    const locationSplits = contract.contractData.split("/")
+                                {contracts.map((contract, index) => {
+                                    const locationSplits = contract.contract_data.split("/")
                                     const fileName = locationSplits ? locationSplits[locationSplits.length - 1] : "Unknown File"
-                                    console.log("fileName", fileName)
+
                                     return (
                                         <TableRow key={index} className="hover:bg-gray-50 transition-colors duration-300">
-                                            <TableCell className="py-3 px-4">{contract.contracterId}</TableCell>
-                                            <TableCell className="py-3 px-4">{contract.clientName}</TableCell>
+                                            <TableCell className="py-3 px-4">{contract.id}</TableCell>
+                                            <TableCell className="py-3 px-4">{contract.client_name}</TableCell>
                                             <TableCell
                                                 className={`py-3 px-4`}>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
                                                         <Button style={{ outline: 'none', boxShadow: 'none' }} variant="ghost">
-                                                            <span className={`${contract.contractStatus === "Draft" ? "text-yellow-600" : "text-green-600"}`}>{contract.contractStatus}</span>
+                                                            <span className={`${contract.status === "Draft" ? "text-yellow-600" : "text-green-600"}`}>{contract.status}</span>
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent>
-                                                        <DropdownMenuRadioGroup value={contract.contractStatus} onValueChange={(status) => console.log("status", status)}>
+                                                        <DropdownMenuRadioGroup value={contract.status} onValueChange={(status) => console.log("status", status)}>
                                                             <DropdownMenuRadioItem value="Draft">Draft</DropdownMenuRadioItem>
                                                             <DropdownMenuRadioItem value="Finalized">Finalized</DropdownMenuRadioItem>
                                                         </DropdownMenuRadioGroup>
@@ -172,7 +141,7 @@ const Contracts = () => {
                                                                 style={{ outline: 'none', boxShadow: 'none' }}
                                                                 variant="ghost"
                                                                 className="w-50 p-2 flex items-center space-x-2"
-                                                                onClick={() => handleFileDownload(contract.contractData)}
+                                                                onClick={() => handleFileDownload(contract.contract_data)}
                                                             >
                                                                 <Download className="h-4 w-4" />
                                                                 <span>Download File</span>
@@ -225,6 +194,8 @@ const Contracts = () => {
                 onChange={handleFileChange}
                 accept=".txt, .json"
             />
+
+            <PaginationUI page={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </>
     )
 }
