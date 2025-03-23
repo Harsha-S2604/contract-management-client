@@ -27,7 +27,7 @@ const Contracts = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [addContractDialogOpen, setAddContractDialogOpen] = useState(false)
     
-    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading, addContract, deleteContract } = useContract()
+    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading, addContract, deleteContract, updateContract } = useContract()
 
     const handleAddContract = async (newContract) => {
         setUILoading(true)
@@ -50,6 +50,22 @@ const Contracts = () => {
 
         toast.success("Contract deleted")
         setContractToDelete(null)
+    }
+
+    const handleUpdateContract = async (id, key, value) => {
+        const updateParams = {
+            id,
+            key,
+            value
+        }
+
+        const contractUpdated = await updateContract(updateParams)
+        if (!contractUpdated) {
+            toast.error("Failed to update the contract!")
+            return
+        }
+
+        toast.success("Contract updated")
     }
 
     const handleFileDownload = () => {
@@ -136,7 +152,7 @@ const Contracts = () => {
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent>
-                                                        <DropdownMenuRadioGroup value={contract.status} onValueChange={(status) => console.log("status", status)}>
+                                                        <DropdownMenuRadioGroup value={contract.status} onValueChange={(status) => handleUpdateContract(contract.id, "status", status)}>
                                                             <DropdownMenuRadioItem value="Draft">Draft</DropdownMenuRadioItem>
                                                             <DropdownMenuRadioItem value="Finalized">Finalized</DropdownMenuRadioItem>
                                                         </DropdownMenuRadioGroup>

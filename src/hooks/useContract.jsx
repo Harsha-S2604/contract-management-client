@@ -32,8 +32,9 @@ const useContract = () => {
         return deleteResponse
     }
 
-    const updateContract = async () => {
-
+    const updateContract = async (updateParams) => {
+        const updateResponse = await contractsApi.updateContract(updateParams)
+        return updateResponse
     }
 
     return {

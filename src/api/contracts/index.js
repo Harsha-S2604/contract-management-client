@@ -44,6 +44,22 @@ const contractsApi = {
         }
 
         return true
+    },
+
+    updateContract: async (updateParams) => {
+        const response = await fetch(`http://localhost:3000/contracts/update/`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updateParams)
+        })
+
+        const result = await response.json()
+
+        if (result.status == "ERROR") {
+            return false
+        }
+
+        return true
     }
 }
 
