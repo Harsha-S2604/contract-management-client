@@ -21,6 +21,7 @@ import { toast } from "sonner"
 const Contracts = () => {
     const fileInputRef = useRef(null);
 
+    const [currentStatus, setCurrentStatus] = useState("All")
     const [currentTimeoutId, setTimeoutId] = useState(null)
     const [contractToUpdate, setContractToUpdate] = useState(null);
     const [contractToDelete, setContractToDelete] = useState(null);
@@ -105,6 +106,14 @@ const Contracts = () => {
         setTimeoutId(timeoutId)
     }
 
+    const handleStatusFilter = async (status) => {
+        setCurrentStatus(status)
+        const contractsStatus = getContractsByField(status, 'status')
+        if (!contractsStatus) {
+            toast.error("Failed to get the contracts")
+        }
+    }
+
     if (contractsLoading) {
         return <Loader />
     }
@@ -136,6 +145,27 @@ const Contracts = () => {
                         className="w-full px-4 py-2 rounded-lg border border-gray-300"
                     />
                 </div>
+
+                <div className="mb-4 flex justify-between">
+                    <div className="space-x-4">
+                        <DropdownMenu>
+                            <span className="text-gray-600">Filter by Status:</span>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="text-sm focus:outline-none">
+                                    <span>{currentStatus}</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuRadioGroup value={currentStatus} onValueChange={handleStatusFilter}>
+                                    <DropdownMenuRadioItem value="All">All</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="Draft">Draft</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="Finalized">Finalized</DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </div>
+
 
                 <div className="bg-white shadow-md rounded-lg overflow-hidden">
                     {

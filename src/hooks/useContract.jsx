@@ -68,17 +68,19 @@ const useContract = () => {
         return updateResponse
     }
 
-    const getContractsByField = async (value) => {
-        if (!value) {
+    const getContractsByField = async (value, field = null) => {
+        if (!value || value == "All") {
             const contractsResult = await handleGetContracts()
             return contractsResult
         }
 
-        let field = "clientName"
+        if (!field) {
+            field = "clientName"
 
-        if (!isNaN(value)) {
-            field = "id"
-            value = parseInt(value)
+            if (!isNaN(value)) {
+                field = "id"
+                value = parseInt(value)
+            }
         }
 
         const result = await contractsApi.getContractsByField(field, value, currentPage, 5)
