@@ -7,7 +7,11 @@ const contractsApi = {
         const result = await response.json()
 
         if (result.status == "ERROR") {
-            return []
+            return {
+                contracts: [],
+                totalContracts: 0,
+                status: "ERROR"
+            }
         }
 
         return {
@@ -60,6 +64,15 @@ const contractsApi = {
         }
 
         return true
+    },
+
+    getContractsByField: async (field, value, page, pageSize) => {
+        const response = await fetch(`http://localhost:3000/contracts/search/${field}/${value}?page=${page}&pageSize=${pageSize}`, {
+            method: "GET",
+        })
+
+        const result = await response.json()
+        return result
     }
 }
 

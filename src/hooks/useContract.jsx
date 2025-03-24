@@ -11,7 +11,7 @@ const useContract = () => {
     useEffect(() => {
         (async () => {
             setContractsLoading(true)
-            await handlePageChange()
+            await handleGetContracts()
             setContractsLoading(false)
         })()
     }, [currentPage])
@@ -29,10 +29,19 @@ const useContract = () => {
         }
     }
 
-    const handlePageChange = async () => {
+    const handleGetContracts = async () => {
         const contractsObj = await getContracts()
+        if (contractsObj.status == "ERROR") {
+            toast.error("Failed to get the contracts")
+            setContracts([])
+            setTotalContracts(0)
+            return false
+        }
+
         setContracts(contractsObj.contracts)
         setTotalContracts(contractsObj.totalContracts)
+
+        return true
     }
 
     const getContracts = async () => {
@@ -59,6 +68,31 @@ const useContract = () => {
         return updateResponse
     }
 
+    const getContractsByField = async (value) => {
+        if (!value) {
+            const contractsResult = await handleGetContracts()
+            return contractsResult
+        }
+
+        let field = "clientName"
+
+        if (!isNaN(value)) {
+            field = "id"
+            value = parseInt(value)
+        }
+
+        const result = await contractsApi.getContractsByField(field, value, currentPage, 5)
+
+        if (result.status == "ERROR") {
+            return false
+        }
+
+        console.log("result.count", result.count)
+        setContracts(result.contracts)
+        setTotalContracts(result.count)
+        return true
+    }
+
     return {
         currentPage,
         contracts,
@@ -67,7 +101,8 @@ const useContract = () => {
         addContract,
         deleteContract,
         updateContract,
-        setCurrentPage
+        setCurrentPage,
+        getContractsByField
     }
 }
 
