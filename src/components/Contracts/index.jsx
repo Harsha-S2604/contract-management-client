@@ -27,7 +27,7 @@ const Contracts = () => {
     const [uiLoading, setUILoading] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [addContractDialogOpen, setAddContractDialogOpen] = useState(false)
-    
+
     const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading, addContract, deleteContract, updateContract, getContractsByField } = useContract()
 
     const handleAddContract = async (newContract) => {
@@ -62,7 +62,7 @@ const Contracts = () => {
         toast.success("Contract updated")
     }
 
-    const handleFileDownload = () => {}
+    const handleFileDownload = () => { }
 
     const handleFileUpdate = (contractId) => {
         if (fileInputRef.current) {
@@ -113,9 +113,9 @@ const Contracts = () => {
 
     return (
         <>
-            {contracts.length === 0 ? (
-                <div className="flex flex-col items-center justify-center mt-10 p-10 text-center bg-gray-50 rounded-lg shadow-md w-96 mx-auto">
-                    <p className="text-lg text-gray-600 mb-4">It looks like there are no contracts here yet.</p>
+            <div className="p-10">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-semibold">Contracts</h2>
                     <Button
                         variant="outline"
                         onClick={(e) => {
@@ -123,116 +123,108 @@ const Contracts = () => {
                             setAddContractDialogOpen(true)
                         }}
                         className="cursor-pointer flex items-center space-x-2 text-white bg-primary hover:bg-primary-dark transition-colors">
-                        <Plus /> <span>Add Contract</span>
+                        <Plus className="h-5 w-5" />
+                        <span>Add Contract</span>
                     </Button>
                 </div>
-            ) : (
-                <div className="p-10">
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-semibold">Contracts</h2>
-                        <Button
-                            variant="outline"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                setAddContractDialogOpen(true)
-                            }}
-                            className="cursor-pointer flex items-center space-x-2 text-white bg-primary hover:bg-primary-dark transition-colors">
-                            <Plus className="h-5 w-5" />
-                            <span>Add Contract</span>
-                        </Button>
-                    </div>
 
-                    <div className="mb-4">
-                        <Input
-                            onChange={handleInputChange}
-                            type="text"
-                            placeholder="Search contract ID or client name"
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300"
-                        />
-                    </div>
-
-                    <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                        <Table className="table-auto w-full">
-                            <TableHeader className="bg-gray-100">
-                                <TableRow>
-                                    <TableHead className="text-left py-3 px-4 text-gray-600">Contracter ID</TableHead>
-                                    <TableHead className="text-left py-3 px-4 text-gray-600">Client Name</TableHead>
-                                    <TableHead className="text-left py-3 px-4 text-gray-600">Status</TableHead>
-                                    <TableHead className="text-left py-3 px-4 text-gray-600">Contract Data</TableHead>
-                                    <TableHead className="text-left py-3 px-4 text-gray-600">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {contracts.map((contract, index) => {
-                                    const locationSplits = contract.contract_data.split("/")
-                                    const fileName = locationSplits ? locationSplits[locationSplits.length - 1] : "Unknown File"
-
-                                    return (
-                                        <TableRow key={index} className="hover:bg-gray-50 transition-colors duration-300">
-                                            <TableCell className="py-3 px-4">{contract.id}</TableCell>
-                                            <TableCell className="py-3 px-4">{contract.client_name}</TableCell>
-                                            <TableCell className="py-3 px-4">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" className="text-sm focus:outline-none">
-                                                            <span className={`${contract.status === "Draft" ? "text-yellow-600" : "text-green-600"}`}>{contract.status}</span>
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent>
-                                                        <DropdownMenuRadioGroup value={contract.status} onValueChange={(status) => handleUpdateContract(contract.id, "status", status)}>
-                                                            <DropdownMenuRadioItem value="Draft">Draft</DropdownMenuRadioItem>
-                                                            <DropdownMenuRadioItem value="Finalized">Finalized</DropdownMenuRadioItem>
-                                                        </DropdownMenuRadioGroup>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </TableCell>
-                                            <TableCell className="py-2 px-4 text-sm text-blue-500">
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <div className="flex text-primary gap-2 items-center cursor-pointer">
-                                                            <File />
-                                                            <span>{fileName}</span>
-                                                        </div>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0" align="start">
-                                                        <div>
-                                                            <Button
-                                                                variant="ghost"
-                                                                className="w-full p-2 flex items-center space-x-2"
-                                                                onClick={() => handleFileDownload(contract.contract_data)}
-                                                            >
-                                                                <Download className="h-4 w-4" />
-                                                                <span>Download File</span>
-                                                            </Button>
-                                                        </div>
-                                                        <div>
-                                                            <Button
-                                                                variant="ghost"
-                                                                className="w-full text-blue-600 p-2 flex items-center space-x-2"
-                                                                onClick={() => handleFileUpdate(contract.id)}
-                                                            >
-                                                                <Upload className="h-4 w-4" />
-                                                                <span>Update File</span>
-                                                            </Button>
-                                                        </div>
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </TableCell>
-                                            <TableCell className="py-2 px-4 flex items-center justify-start space-x-2">
-                                                <Trash className="cursor-pointer text-red-600 hover:text-red-700 transition-colors" onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    setDeleteDialogOpen(true)
-                                                    setContractToDelete(contract.id)
-                                                }} />
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                })}
-                            </TableBody>
-                        </Table>
-                    </div>
+                <div className="mb-4">
+                    <Input
+                        onChange={handleInputChange}
+                        type="text"
+                        placeholder="Search contract ID or client name"
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300"
+                    />
                 </div>
-            )}
+
+                <div className="bg-white shadow-md rounded-lg overflow-hidden">
+                    {
+                        !contracts.length ?
+                            <div className="items-center justify-center mt-10 p-10 text-center rounded-lg mx-auto">
+                                <p className="text-lg text-gray-600 mb-4">No contracts found.</p>
+                            </div> :
+                            <Table className="table-auto w-full">
+                                <TableHeader className="bg-gray-100">
+                                    <TableRow>
+                                        <TableHead className="text-left py-3 px-4 text-gray-600">Contracter ID</TableHead>
+                                        <TableHead className="text-left py-3 px-4 text-gray-600">Client Name</TableHead>
+                                        <TableHead className="text-left py-3 px-4 text-gray-600">Status</TableHead>
+                                        <TableHead className="text-left py-3 px-4 text-gray-600">Contract Data</TableHead>
+                                        <TableHead className="text-left py-3 px-4 text-gray-600">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {contracts.map((contract, index) => {
+                                        const locationSplits = contract.contract_data.split("/")
+                                        const fileName = locationSplits ? locationSplits[locationSplits.length - 1] : "Unknown File"
+
+                                        return (
+                                            <TableRow key={index} className="hover:bg-gray-50 transition-colors duration-300">
+                                                <TableCell className="py-3 px-4">{contract.id}</TableCell>
+                                                <TableCell className="py-3 px-4">{contract.client_name}</TableCell>
+                                                <TableCell className="py-3 px-4">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" className="text-sm focus:outline-none">
+                                                                <span className={`${contract.status === "Draft" ? "text-yellow-600" : "text-green-600"}`}>{contract.status}</span>
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent>
+                                                            <DropdownMenuRadioGroup value={contract.status} onValueChange={(status) => handleUpdateContract(contract.id, "status", status)}>
+                                                                <DropdownMenuRadioItem value="Draft">Draft</DropdownMenuRadioItem>
+                                                                <DropdownMenuRadioItem value="Finalized">Finalized</DropdownMenuRadioItem>
+                                                            </DropdownMenuRadioGroup>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </TableCell>
+                                                <TableCell className="py-2 px-4 text-sm text-blue-500">
+                                                    <Popover>
+                                                        <PopoverTrigger asChild>
+                                                            <div className="flex text-primary gap-2 items-center cursor-pointer">
+                                                                <File />
+                                                                <span>{fileName}</span>
+                                                            </div>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="w-auto p-0" align="start">
+                                                            <div>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    className="w-full p-2 flex items-center space-x-2"
+                                                                    onClick={() => handleFileDownload(contract.contract_data)}
+                                                                >
+                                                                    <Download className="h-4 w-4" />
+                                                                    <span>Download File</span>
+                                                                </Button>
+                                                            </div>
+                                                            <div>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    className="w-full text-blue-600 p-2 flex items-center space-x-2"
+                                                                    onClick={() => handleFileUpdate(contract.id)}
+                                                                >
+                                                                    <Upload className="h-4 w-4" />
+                                                                    <span>Update File</span>
+                                                                </Button>
+                                                            </div>
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </TableCell>
+                                                <TableCell className="py-2 px-4 flex items-center justify-start space-x-2">
+                                                    <Trash className="cursor-pointer text-red-600 hover:text-red-700 transition-colors" onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        setDeleteDialogOpen(true)
+                                                        setContractToDelete(contract.id)
+                                                    }} />
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
+                                </TableBody>
+                            </Table>
+                    }
+
+                </div>
+            </div>
 
             <DeleteDialogConfirmation
                 dialogOpen={deleteDialogOpen}
