@@ -16,8 +16,8 @@ const contractsApi = {
         }
     },
 
-    createContract: async (contract) => {
-        const response = await fetch(`http://localhost:3000/contracts/create`, {
+    createContract: async (contract, page, pageSize) => {
+        const response = await fetch(`http://localhost:3000/contracts/create?page=${page}&pageSize=${pageSize}`, {
             method: "POST",
             headers: { 'Content-Type':'application/json' },
             body: JSON.stringify({contract})
@@ -32,8 +32,8 @@ const contractsApi = {
         return true
     },
 
-    deleteContract: async (contractId) => {
-        const response = await fetch(`http://localhost:3000/contracts/delete/${contractId}`, {
+    deleteContract: async (contractId, page, pageSize) => {
+        const response = await fetch(`http://localhost:3000/contracts/delete/${contractId}?page=${page}&pageSize=${pageSize}`, {
             method: "DELETE",
         })
 
@@ -46,8 +46,8 @@ const contractsApi = {
         return true
     },
 
-    updateContract: async (updateParams) => {
-        const response = await fetch(`http://localhost:3000/contracts/update/`, {
+    updateContract: async (updateParams, page, pageSize) => {
+        const response = await fetch(`http://localhost:3000/contracts/update?page=${page}&pageSize=${pageSize}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updateParams)
