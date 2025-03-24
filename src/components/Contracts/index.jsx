@@ -29,7 +29,7 @@ const Contracts = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [addContractDialogOpen, setAddContractDialogOpen] = useState(false)
 
-    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading, addContract, deleteContract, updateContract, getContractsByField } = useContract()
+    const { currentPage, totalContracts, setCurrentPage, contracts, contractsLoading, addContract, deleteContract, updateContract, getContractsByField, downloadFile } = useContract()
 
     const handleAddContract = async (newContract) => {
         setUILoading(true)
@@ -63,7 +63,21 @@ const Contracts = () => {
         toast.success("Contract updated")
     }
 
-    const handleFileDownload = () => { }
+    const handleFileDownload = async (clientName, file) => {
+        const fileBlob = await downloadFile(clientName, file)
+        if (!fileBlob) {
+            toast.error("Failed to download the file")
+        }
+
+        console.log("file blob", fileBlob)
+
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(fileBlob)
+        link.download = file 
+        link.click() 
+
+        URL.revokeObjectURL(link.href)
+    }
 
     const handleFileUpdate = (contractId) => {
         if (fileInputRef.current) {
@@ -220,7 +234,7 @@ const Contracts = () => {
                                                                 <Button
                                                                     variant="ghost"
                                                                     className="w-full p-2 flex items-center space-x-2"
-                                                                    onClick={() => handleFileDownload(contract.contract_data)}
+                                                                    onClick={() => handleFileDownload(contract.client_name, contract.contract_data)}
                                                                 >
                                                                     <Download className="h-4 w-4" />
                                                                     <span>Download File</span>

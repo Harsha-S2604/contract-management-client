@@ -95,6 +95,11 @@ const useContract = () => {
         return true
     }
 
+    const downloadFile = async (clientName, fileName) => {
+        const fileBlob = await contractsApi.downloadFile(clientName, fileName)
+        return fileBlob
+    }
+
     return {
         currentPage,
         contracts,
@@ -104,7 +109,8 @@ const useContract = () => {
         deleteContract,
         updateContract,
         setCurrentPage,
-        getContractsByField
+        getContractsByField,
+        downloadFile
     }
 }
 

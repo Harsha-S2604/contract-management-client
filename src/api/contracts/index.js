@@ -73,6 +73,19 @@ const contractsApi = {
 
         const result = await response.json()
         return result
+    },
+
+    downloadFile: async (clientName, fileName) => {
+        const response = await fetch(`http://localhost:3000/contracts/download/${clientName}/${fileName}`, {
+            method: "GET",
+        })
+
+        if (!response.ok) {
+            return false
+        }
+
+        const blob = await response.blob();
+        return blob
     }
 }
 
