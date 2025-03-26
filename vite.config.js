@@ -12,6 +12,7 @@ dotenv.config()
 export default defineConfig({
   define: {
     'process.env.SERVER_URL': JSON.stringify(process.env.SERVER_URL),
+    'process.env.DEV_SERVER_URL': JSON.stringify(process.env.DEV_SERVER_URL),
   },
   plugins: [react(), tailwindcss(), jsconfigPaths()],
   resolve: {
