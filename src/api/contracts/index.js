@@ -1,6 +1,6 @@
 const contractsApi = {
     getAllContracts: async (page, pageSize) => {
-        const response = await fetch(`http://localhost:3000/contracts?page=${page}&paeSize=${pageSize}`, {
+        const response = await fetch(`${process.env.SERVER_URL}/contracts?page=${page}&paeSize=${pageSize}`, {
             method: "GET",
         })
 
