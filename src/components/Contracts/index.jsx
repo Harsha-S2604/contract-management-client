@@ -4,7 +4,7 @@ import Loader from "../ui/loader"
 import { Button } from "../ui/button"
 import AddContractDialog from "./AddContractDialog"
 import PaginationUI from "./Pagination"
-import DeleteDialogConfirmation from "../ui/DeleteDialog"
+import DeleteDialogConfirmation from "../ui/deletedialog"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import {
